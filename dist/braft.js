@@ -7415,7 +7415,8 @@ var htmlToEntity = function htmlToEntity(nodeName, node, createEntity) {
     width = width || 'auto';
     height = height || 'auto';
 
-    var entityData = { url: url, width: width, height: height };
+    var entityData = { url: url, width: width, height: height, "data-origin-width": node['data-origin-width'],
+      "data-origin-height": node['data-origin-height'] };
 
     if (parentNode.nodeName.toLowerCase() === 'a') {
       entityData.link = parentNode.href;
