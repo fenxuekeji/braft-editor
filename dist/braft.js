@@ -7607,7 +7607,7 @@ exports.default = {
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
 
 var _react = __webpack_require__(0);
@@ -7627,285 +7627,292 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var EditorController = function (_React$Component) {
-  _inherits(EditorController, _React$Component);
+    _inherits(EditorController, _React$Component);
 
-  function EditorController() {
-    var _ref;
+    function EditorController() {
+        var _ref;
 
-    var _temp, _this, _ret;
+        var _temp, _this, _ret;
 
-    _classCallCheck(this, EditorController);
+        _classCallCheck(this, EditorController);
 
-    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+        }
+
+        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = EditorController.__proto__ || Object.getPrototypeOf(EditorController)).call.apply(_ref, [this].concat(args))), _this), _this.applyChange = function (editorState) {
+            _this.onChange(editorState);
+            return _this;
+        }, _this.selectionCollapsed = function () {
+            return _this.selectionState.isCollapsed();
+        }, _this.selectBlock = function (block) {
+
+            var blockKey = block.getKey();
+
+            return _this.applyChange(_draftJs.EditorState.forceSelection(_this.editorState, new _draftJs.SelectionState({
+                anchorKey: blockKey,
+                anchorOffset: 0,
+                focusKey: blockKey,
+                focusOffset: block.getLength()
+            })));
+        }, _this.selectNextBlock = function (block) {
+            var nextBlock = _this.contentState.getBlockAfter(block.getKey());
+            return nextBlock ? _this.selectBlock(nextBlock) : _this.applyChange(_this.editorState);
+        }, _this.removeBlock = function (block) {
+
+            var nextContentState = void 0,
+                nextEditorState = void 0;
+            var blockKey = block.getKey();
+
+            nextContentState = _draftJs.Modifier.removeRange(_this.contentState, new _draftJs.SelectionState({
+                anchorKey: blockKey,
+                anchorOffset: 0,
+                focusKey: blockKey,
+                focusOffset: block.getLength()
+            }), 'backward');
+
+            nextContentState = _draftJs.Modifier.setBlockType(nextContentState, nextContentState.getSelectionAfter(), 'unstyled');
+            nextEditorState = _draftJs.EditorState.push(_this.editorState, nextContentState, 'remove-range');
+            nextEditorState = _draftJs.EditorState.forceSelection(nextEditorState, nextContentState.getSelectionAfter());
+
+            return _this.applyChange(nextEditorState);
+        }, _this.getSelectionBlock = function () {
+            return _this.contentState.getBlockForKey(_this.selectionState.getAnchorKey());
+        }, _this.setSelectionBlockData = function (blockData) {
+            return _this.applyChange((0, _draftjsUtils.setBlockData)(_this.editorState, blockData));
+        }, _this.getSelectionBlockData = function (name) {
+            var blockData = _this.getSelectionBlock().getData();
+            return name ? blockData.get(name) : blockData;
+        }, _this.getSelectionBlockType = function () {
+            return _this.getSelectionBlock().getType();
+        }, _this.toggleSelectionBlockType = function (blockType) {
+            return _this.applyChange(_draftJs.RichUtils.toggleBlockType(_this.editorState, blockType));
+        }, _this.getSelectionEntityData = function (type) {
+
+            var entityKey = (0, _draftjsUtils.getSelectionEntity)(_this.editorState);
+            if (entityKey) {
+                var entity = _this.contentState.getEntity(entityKey);
+                if (entity && entity.get('type') === type) {
+                    var _entity$getData = entity.getData(),
+                        href = _entity$getData.href,
+                        target = _entity$getData.target;
+
+                    return { href: href, target: target };
+                } else {
+                    return {};
+                }
+            } else {
+                return {};
+            }
+        }, _this.getSelectionInlineStyle = function () {
+            return _this.editorState.getCurrentInlineStyle();
+        }, _this.selectionHasInlineStyle = function (style) {
+            return _this.getSelectionInlineStyle().has(style.toUpperCase());
+        }, _this.toggleSelectionInlineStyle = function (style) {
+            var stylesToBeRemoved = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+
+
+            if (_this.selectionState.isCollapsed()) {
+                return _this;
+            }
+
+            style = style.toUpperCase();
+            stylesToBeRemoved = stylesToBeRemoved.filter(function (item) {
+                return item !== style;
+            });
+
+            var currentInlineStyle = _this.getSelectionInlineStyle();
+            var nextContentState = stylesToBeRemoved.length ? stylesToBeRemoved.reduce(function (contentState, item) {
+                return _draftJs.Modifier.removeInlineStyle(contentState, _this.selectionState, item);
+            }, _this.contentState) : _this.contentState;
+
+            var nextEditorState = stylesToBeRemoved.length ? _draftJs.EditorState.push(_this.editorState, nextContentState, 'change-inline-style') : _this.editorState;
+            return _this.applyChange(_draftJs.RichUtils.toggleInlineStyle(nextEditorState, style));
+        }, _this.removeSelectionInlineStyles = function () {
+            return _this.applyChange((0, _draftjsUtils.removeAllInlineStyles)(_this.editorState));
+        }, _this.toggleSelectionAlignment = function (alignment) {
+            return _this.setSelectionBlockData({
+                textAlign: _this.getSelectionBlockData('textAlign') !== alignment ? alignment : undefined
+            });
+        }, _this.toggleSelectionColor = function (color) {
+            return _this.toggleSelectionInlineStyle('COLOR-' + color.replace('#', ''), _this.colorList.map(function (item) {
+                return 'COLOR-' + item.replace('#', '').toUpperCase();
+            }));
+        }, _this.toggleSelectionBackgroundColor = function (color) {
+            return _this.toggleSelectionInlineStyle('BGCOLOR-' + color.replace('#', ''), _this.colorList.map(function (item) {
+                return 'BGCOLOR-' + item.replace('#', '').toUpperCase();
+            }));
+        }, _this.toggleSelectionFontSize = function (fontSize) {
+            return _this.toggleSelectionInlineStyle('FONTSIZE-' + fontSize, _this.fontSizeList.map(function (item) {
+                return 'FONTSIZE-' + item;
+            }));
+        }, _this.toggleSelectionLineHeight = function (lineHeight) {
+            return _this.toggleSelectionInlineStyle('LINEHEIGHT-' + lineHeight, _this.lineHeightList.map(function (item) {
+                return 'LINEHEIGHT-' + item;
+            }));
+        }, _this.toggleSelectionFontFamily = function (fontFamily) {
+            return _this.toggleSelectionInlineStyle('FONTFAMILY-' + fontFamily, _this.fontFamilyList.map(function (item) {
+                return 'FONTFAMILY-' + item.name.toUpperCase();
+            }));
+        }, _this.toggleSelectionLetterSpacing = function (letterSpacing) {
+            return _this.toggleSelectionInlineStyle('LETTERSPACING-' + letterSpacing, _this.letterSpacingList.map(function (item) {
+                return 'LETTERSPACING-' + item;
+            }));
+        }, _this.toggleSelectionIndent = function (indent) {
+            return _this.toggleSelectionInlineStyle('INDENT-' + indent, _this.indentList.map(function (item) {
+                return 'INDENT-' + item;
+            }));
+        }, _this.insertHorizontalLine = function () {
+
+            if (!_this.selectionState.isCollapsed() || _this.getSelectionBlockType() === 'atomic') {
+                return _this;
+            }
+
+            var contentStateWithEntity = _this.editorState.getCurrentContent().createEntity('HR', 'IMMUTABLE', {});
+            var entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+            var newEditorState = _draftJs.AtomicBlockUtils.insertAtomicBlock(_this.editorState, entityKey, ' ');
+
+            return _this.applyChange(newEditorState);
+        }, _this.toggleSelectionLink = function (href, target) {
+
+            var entityData = { href: href, target: target };
+
+            if (_this.selectionState.isCollapsed() || _this.getSelectionBlockType() === 'atomic') {
+                return _this;
+            }
+
+            if (href === false) {
+                _this.applyChange(_draftJs.RichUtils.toggleLink(_this.editorState, _this.selectionState, null));
+                return _this;
+            }
+
+            if (href === null) {
+                delete entityData.href;
+            }
+
+            var nextContentState = _this.contentState.createEntity('LINK', 'MUTABLE', entityData);
+            var entityKey = nextContentState.getLastCreatedEntityKey();
+
+            var nextEditorState = _draftJs.EditorState.set(_this.editorState, {
+                currentContent: nextContentState
+            });
+
+            nextEditorState = _draftJs.RichUtils.toggleLink(nextEditorState, _this.selectionState, entityKey);
+            nextEditorState = _draftJs.EditorState.forceSelection(nextEditorState, _this.selectionState.merge({
+                anchorOffset: _this.selectionState.getEndOffset(),
+                focusOffset: _this.selectionState.getEndOffset()
+            }));
+
+            nextEditorState = _draftJs.EditorState.push(nextEditorState, _draftJs.Modifier.insertText(nextEditorState.getCurrentContent(), nextEditorState.getSelection(), ' '), 'insert-text');
+
+            return _this.applyChange(nextEditorState);
+        }, _this.insertText = function (text) {
+            var replace = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+
+            var currentSelectedBlockType = _this.getSelectionBlockType();
+
+            if (currentSelectedBlockType === 'atomic') {
+                return _this;
+            }
+
+            if (!_this.selectionState.isCollapsed()) {
+                return replace ? _this.applyChange(_draftJs.EditorState.push(_this.editorState, _draftJs.Modifier.replaceText(_this.contentState, _this.selectionState, text), 'replace-text')) : _this;
+            } else {
+                return _this.applyChange(_draftJs.EditorState.push(_this.editorState, _draftJs.Modifier.insertText(_this.contentState, _this.selectionState, text), 'insert-text'));
+            }
+        }, _this.replaceText = function (text) {
+            return _this.insertText(text);
+        }, _this.insertMedias = function () {
+            var medias = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+
+
+            if (!medias.length) {
+                return _this;
+            }
+
+            if (_this.getSelectionBlockType() === 'atomic') {
+                _this.selectNextBlock(_this.getSelectionBlock());
+            }
+
+            var newEditorState = medias.reduce(function (editorState, media) {
+                var url = media.url,
+                    name = media.name,
+                    type = media.type,
+                    meta = media.meta;
+
+                var contentStateWithEntity = editorState.getCurrentContent().createEntity(type, 'IMMUTABLE', {
+                    url: url,
+                    name: name,
+                    type: type,
+                    meta: meta,
+                    "data-origin-width": media['data-origin-width'],
+                    "data-origin-height": media['data-origin-height']
+                });
+                var entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+                return _draftJs.AtomicBlockUtils.insertAtomicBlock(editorState, entityKey, ' ');
+            }, _this.editorState);
+
+            return _this.applyChange(newEditorState);
+        }, _this.setMediaData = function (entityKey, data) {
+            return _this.applyChange(_draftJs.EditorState.push(_this.editorState, _this.contentState.mergeEntityData(entityKey, data), 'change-block-data'));
+        }, _this.removeMedia = function (mediaBlock) {
+            return _this.removeBlock(mediaBlock);
+        }, _this.setMediaPosition = function (mediaBlock, position) {
+
+            var newPosition = {};
+            var float = position.float,
+                alignment = position.alignment;
+
+
+            if (typeof float !== 'undefined') {
+                newPosition.float = mediaBlock.getData().get('float') === float ? null : float;
+            }
+
+            if (typeof alignment !== 'undefined') {
+                newPosition.alignment = mediaBlock.getData().get('alignment') === alignment ? null : alignment;
+            }
+
+            return _this.selectBlock(mediaBlock).setSelectionBlockData(newPosition);
+        }, _this.clear = function () {
+
+            var contentState = _this.editorState.getCurrentContent();
+            var firstBlock = contentState.getFirstBlock();
+            var lastBlock = contentState.getLastBlock();
+
+            var allSelected = new _draftJs.SelectionState({
+                anchorKey: firstBlock.getKey(),
+                anchorOffset: 0,
+                focusKey: lastBlock.getKey(),
+                focusOffset: lastBlock.getLength(),
+                hasFocus: true
+            });
+
+            _this.editorState = _draftJs.EditorState.push(_this.editorState, _draftJs.Modifier.removeRange(contentState, allSelected, 'backward'), 'remove-range');
+
+            return _this.applyChange(_this.editorState);
+        }, _this.undo = function () {
+            return _this.applyChange(_draftJs.EditorState.undo(_this.editorState));
+        }, _this.redo = function () {
+            return _this.applyChange(_draftJs.EditorState.redo(_this.editorState));
+        }, _this.focus = function () {
+            _this.draftInstance && _this.draftInstance.focus();
+            return _this;
+        }, _this.blur = function () {
+            _this.draftInstance && _this.draftInstance.blur();
+            return _this;
+        }, _this.requestFocus = function () {
+            window.setImmediate(function () {
+                _this.focus();
+            });
+        }, _this.requestBlur = function () {
+            window.setImmediate(function () {
+                _this.blur();
+            });
+        }, _temp), _possibleConstructorReturn(_this, _ret);
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = EditorController.__proto__ || Object.getPrototypeOf(EditorController)).call.apply(_ref, [this].concat(args))), _this), _this.applyChange = function (editorState) {
-      _this.onChange(editorState);
-      return _this;
-    }, _this.selectionCollapsed = function () {
-      return _this.selectionState.isCollapsed();
-    }, _this.selectBlock = function (block) {
-
-      var blockKey = block.getKey();
-
-      return _this.applyChange(_draftJs.EditorState.forceSelection(_this.editorState, new _draftJs.SelectionState({
-        anchorKey: blockKey,
-        anchorOffset: 0,
-        focusKey: blockKey,
-        focusOffset: block.getLength()
-      })));
-    }, _this.selectNextBlock = function (block) {
-      var nextBlock = _this.contentState.getBlockAfter(block.getKey());
-      return nextBlock ? _this.selectBlock(nextBlock) : _this.applyChange(_this.editorState);
-    }, _this.removeBlock = function (block) {
-
-      var nextContentState = void 0,
-          nextEditorState = void 0;
-      var blockKey = block.getKey();
-
-      nextContentState = _draftJs.Modifier.removeRange(_this.contentState, new _draftJs.SelectionState({
-        anchorKey: blockKey,
-        anchorOffset: 0,
-        focusKey: blockKey,
-        focusOffset: block.getLength()
-      }), 'backward');
-
-      nextContentState = _draftJs.Modifier.setBlockType(nextContentState, nextContentState.getSelectionAfter(), 'unstyled');
-      nextEditorState = _draftJs.EditorState.push(_this.editorState, nextContentState, 'remove-range');
-      nextEditorState = _draftJs.EditorState.forceSelection(nextEditorState, nextContentState.getSelectionAfter());
-
-      return _this.applyChange(nextEditorState);
-    }, _this.getSelectionBlock = function () {
-      return _this.contentState.getBlockForKey(_this.selectionState.getAnchorKey());
-    }, _this.setSelectionBlockData = function (blockData) {
-      return _this.applyChange((0, _draftjsUtils.setBlockData)(_this.editorState, blockData));
-    }, _this.getSelectionBlockData = function (name) {
-      var blockData = _this.getSelectionBlock().getData();
-      return name ? blockData.get(name) : blockData;
-    }, _this.getSelectionBlockType = function () {
-      return _this.getSelectionBlock().getType();
-    }, _this.toggleSelectionBlockType = function (blockType) {
-      return _this.applyChange(_draftJs.RichUtils.toggleBlockType(_this.editorState, blockType));
-    }, _this.getSelectionEntityData = function (type) {
-
-      var entityKey = (0, _draftjsUtils.getSelectionEntity)(_this.editorState);
-      if (entityKey) {
-        var entity = _this.contentState.getEntity(entityKey);
-        if (entity && entity.get('type') === type) {
-          var _entity$getData = entity.getData(),
-              href = _entity$getData.href,
-              target = _entity$getData.target;
-
-          return { href: href, target: target };
-        } else {
-          return {};
-        }
-      } else {
-        return {};
-      }
-    }, _this.getSelectionInlineStyle = function () {
-      return _this.editorState.getCurrentInlineStyle();
-    }, _this.selectionHasInlineStyle = function (style) {
-      return _this.getSelectionInlineStyle().has(style.toUpperCase());
-    }, _this.toggleSelectionInlineStyle = function (style) {
-      var stylesToBeRemoved = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
-
-
-      if (_this.selectionState.isCollapsed()) {
-        return _this;
-      }
-
-      style = style.toUpperCase();
-      stylesToBeRemoved = stylesToBeRemoved.filter(function (item) {
-        return item !== style;
-      });
-
-      var currentInlineStyle = _this.getSelectionInlineStyle();
-      var nextContentState = stylesToBeRemoved.length ? stylesToBeRemoved.reduce(function (contentState, item) {
-        return _draftJs.Modifier.removeInlineStyle(contentState, _this.selectionState, item);
-      }, _this.contentState) : _this.contentState;
-
-      var nextEditorState = stylesToBeRemoved.length ? _draftJs.EditorState.push(_this.editorState, nextContentState, 'change-inline-style') : _this.editorState;
-      return _this.applyChange(_draftJs.RichUtils.toggleInlineStyle(nextEditorState, style));
-    }, _this.removeSelectionInlineStyles = function () {
-      return _this.applyChange((0, _draftjsUtils.removeAllInlineStyles)(_this.editorState));
-    }, _this.toggleSelectionAlignment = function (alignment) {
-      return _this.setSelectionBlockData({
-        textAlign: _this.getSelectionBlockData('textAlign') !== alignment ? alignment : undefined
-      });
-    }, _this.toggleSelectionColor = function (color) {
-      return _this.toggleSelectionInlineStyle('COLOR-' + color.replace('#', ''), _this.colorList.map(function (item) {
-        return 'COLOR-' + item.replace('#', '').toUpperCase();
-      }));
-    }, _this.toggleSelectionBackgroundColor = function (color) {
-      return _this.toggleSelectionInlineStyle('BGCOLOR-' + color.replace('#', ''), _this.colorList.map(function (item) {
-        return 'BGCOLOR-' + item.replace('#', '').toUpperCase();
-      }));
-    }, _this.toggleSelectionFontSize = function (fontSize) {
-      return _this.toggleSelectionInlineStyle('FONTSIZE-' + fontSize, _this.fontSizeList.map(function (item) {
-        return 'FONTSIZE-' + item;
-      }));
-    }, _this.toggleSelectionLineHeight = function (lineHeight) {
-      return _this.toggleSelectionInlineStyle('LINEHEIGHT-' + lineHeight, _this.lineHeightList.map(function (item) {
-        return 'LINEHEIGHT-' + item;
-      }));
-    }, _this.toggleSelectionFontFamily = function (fontFamily) {
-      return _this.toggleSelectionInlineStyle('FONTFAMILY-' + fontFamily, _this.fontFamilyList.map(function (item) {
-        return 'FONTFAMILY-' + item.name.toUpperCase();
-      }));
-    }, _this.toggleSelectionLetterSpacing = function (letterSpacing) {
-      return _this.toggleSelectionInlineStyle('LETTERSPACING-' + letterSpacing, _this.letterSpacingList.map(function (item) {
-        return 'LETTERSPACING-' + item;
-      }));
-    }, _this.toggleSelectionIndent = function (indent) {
-      return _this.toggleSelectionInlineStyle('INDENT-' + indent, _this.indentList.map(function (item) {
-        return 'INDENT-' + item;
-      }));
-    }, _this.insertHorizontalLine = function () {
-
-      if (!_this.selectionState.isCollapsed() || _this.getSelectionBlockType() === 'atomic') {
-        return _this;
-      }
-
-      var contentStateWithEntity = _this.editorState.getCurrentContent().createEntity('HR', 'IMMUTABLE', {});
-      var entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-      var newEditorState = _draftJs.AtomicBlockUtils.insertAtomicBlock(_this.editorState, entityKey, ' ');
-
-      return _this.applyChange(newEditorState);
-    }, _this.toggleSelectionLink = function (href, target) {
-
-      var entityData = { href: href, target: target };
-
-      if (_this.selectionState.isCollapsed() || _this.getSelectionBlockType() === 'atomic') {
-        return _this;
-      }
-
-      if (href === false) {
-        _this.applyChange(_draftJs.RichUtils.toggleLink(_this.editorState, _this.selectionState, null));
-        return _this;
-      }
-
-      if (href === null) {
-        delete entityData.href;
-      }
-
-      var nextContentState = _this.contentState.createEntity('LINK', 'MUTABLE', entityData);
-      var entityKey = nextContentState.getLastCreatedEntityKey();
-
-      var nextEditorState = _draftJs.EditorState.set(_this.editorState, {
-        currentContent: nextContentState
-      });
-
-      nextEditorState = _draftJs.RichUtils.toggleLink(nextEditorState, _this.selectionState, entityKey);
-      nextEditorState = _draftJs.EditorState.forceSelection(nextEditorState, _this.selectionState.merge({
-        anchorOffset: _this.selectionState.getEndOffset(),
-        focusOffset: _this.selectionState.getEndOffset()
-      }));
-
-      nextEditorState = _draftJs.EditorState.push(nextEditorState, _draftJs.Modifier.insertText(nextEditorState.getCurrentContent(), nextEditorState.getSelection(), ' '), 'insert-text');
-
-      return _this.applyChange(nextEditorState);
-    }, _this.insertText = function (text) {
-      var replace = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-
-
-      var currentSelectedBlockType = _this.getSelectionBlockType();
-
-      if (currentSelectedBlockType === 'atomic') {
-        return _this;
-      }
-
-      if (!_this.selectionState.isCollapsed()) {
-        return replace ? _this.applyChange(_draftJs.EditorState.push(_this.editorState, _draftJs.Modifier.replaceText(_this.contentState, _this.selectionState, text), 'replace-text')) : _this;
-      } else {
-        return _this.applyChange(_draftJs.EditorState.push(_this.editorState, _draftJs.Modifier.insertText(_this.contentState, _this.selectionState, text), 'insert-text'));
-      }
-    }, _this.replaceText = function (text) {
-      return _this.insertText(text);
-    }, _this.insertMedias = function () {
-      var medias = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-
-
-      if (!medias.length) {
-        return _this;
-      }
-
-      if (_this.getSelectionBlockType() === 'atomic') {
-        _this.selectNextBlock(_this.getSelectionBlock());
-      }
-
-      var newEditorState = medias.reduce(function (editorState, media) {
-        var url = media.url,
-            name = media.name,
-            type = media.type,
-            meta = media.meta;
-
-        var contentStateWithEntity = editorState.getCurrentContent().createEntity(type, 'IMMUTABLE', { url: url, name: name, type: type, meta: meta });
-        var entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-        return _draftJs.AtomicBlockUtils.insertAtomicBlock(editorState, entityKey, ' ');
-      }, _this.editorState);
-
-      return _this.applyChange(newEditorState);
-    }, _this.setMediaData = function (entityKey, data) {
-      return _this.applyChange(_draftJs.EditorState.push(_this.editorState, _this.contentState.mergeEntityData(entityKey, data), 'change-block-data'));
-    }, _this.removeMedia = function (mediaBlock) {
-      return _this.removeBlock(mediaBlock);
-    }, _this.setMediaPosition = function (mediaBlock, position) {
-
-      var newPosition = {};
-      var float = position.float,
-          alignment = position.alignment;
-
-
-      if (typeof float !== 'undefined') {
-        newPosition.float = mediaBlock.getData().get('float') === float ? null : float;
-      }
-
-      if (typeof alignment !== 'undefined') {
-        newPosition.alignment = mediaBlock.getData().get('alignment') === alignment ? null : alignment;
-      }
-
-      return _this.selectBlock(mediaBlock).setSelectionBlockData(newPosition);
-    }, _this.clear = function () {
-
-      var contentState = _this.editorState.getCurrentContent();
-      var firstBlock = contentState.getFirstBlock();
-      var lastBlock = contentState.getLastBlock();
-
-      var allSelected = new _draftJs.SelectionState({
-        anchorKey: firstBlock.getKey(),
-        anchorOffset: 0,
-        focusKey: lastBlock.getKey(),
-        focusOffset: lastBlock.getLength(),
-        hasFocus: true
-      });
-
-      _this.editorState = _draftJs.EditorState.push(_this.editorState, _draftJs.Modifier.removeRange(contentState, allSelected, 'backward'), 'remove-range');
-
-      return _this.applyChange(_this.editorState);
-    }, _this.undo = function () {
-      return _this.applyChange(_draftJs.EditorState.undo(_this.editorState));
-    }, _this.redo = function () {
-      return _this.applyChange(_draftJs.EditorState.redo(_this.editorState));
-    }, _this.focus = function () {
-      _this.draftInstance && _this.draftInstance.focus();
-      return _this;
-    }, _this.blur = function () {
-      _this.draftInstance && _this.draftInstance.blur();
-      return _this;
-    }, _this.requestFocus = function () {
-      window.setImmediate(function () {
-        _this.focus();
-      });
-    }, _this.requestBlur = function () {
-      window.setImmediate(function () {
-        _this.blur();
-      });
-    }, _temp), _possibleConstructorReturn(_this, _ret);
-  }
-
-  return EditorController;
+    return EditorController;
 }(_react2.default.Component);
 
 exports.default = EditorController;
@@ -11317,7 +11324,7 @@ exports.default = HorizontalLine;
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -11341,336 +11348,346 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var Image = function (_React$Component) {
-  _inherits(Image, _React$Component);
+    _inherits(Image, _React$Component);
 
-  function Image() {
-    var _ref;
+    function Image() {
+        var _ref;
 
-    var _temp, _this, _ret;
+        var _temp, _this, _ret;
 
-    _classCallCheck(this, Image);
+        _classCallCheck(this, Image);
 
-    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+        }
+
+        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Image.__proto__ || Object.getPrototypeOf(Image)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+            toolbarVisible: false,
+            toolbarOffset: 0,
+            linkEditorVisible: false,
+            sizeEditorVisible: false,
+            tempLink: null,
+            tempWidth: null,
+            tempHeight: null
+        }, _this.removeImage = function (e) {
+            _this.props.editor.removeBlock(_this.props.block);
+            _this.props.editor.setEditorProp('readOnly', false);
+        }, _this.toggleLinkEditor = function () {
+            _this.setState({
+                linkEditorVisible: !_this.state.linkEditorVisible,
+                sizeEditorVisible: false
+            });
+        }, _this.toggleSizeEditor = function () {
+            _this.setState({
+                linkEditorVisible: false,
+                sizeEditorVisible: !_this.state.sizeEditorVisible
+            });
+        }, _this.handleLinkInputKeyDown = function (e) {
+
+            if (e.keyCode === 13) {
+                _this.confirmImageLink();
+            } else {
+                return;
+            }
+        }, _this.setImageLink = function (e) {
+
+            _this.setState({
+                tempLink: e.currentTarget.value
+            });
+
+            return;
+        }, _this.confirmImageLink = function () {
+            var link = _this.state.tempLink;
+
+
+            if (link !== null) {
+                _this.props.editor.setMediaData(_this.props.entityKey, { link: link });
+                window.setImmediate(_this.props.editor.forceRender);
+            }
+        }, _this.handleSizeInputKeyDown = function (e) {
+
+            if (e.keyCode === 13) {
+                _this.confirmImageSize();
+            } else {
+                return;
+            }
+        }, _this.setImageWidth = function (_ref2) {
+            var currentTarget = _ref2.currentTarget;
+            var value = currentTarget.value;
+
+
+            value && !isNaN(value) && (value = value + 'px');
+
+            _this.setState({
+                tempWidth: value
+            });
+
+            return;
+        }, _this.setImageHeight = function (_ref3) {
+            var currentTarget = _ref3.currentTarget;
+            var value = currentTarget.value;
+
+
+            value && !isNaN(value) && (value = value + 'px');
+
+            _this.setState({
+                tempHeight: value
+            });
+
+            return;
+        }, _this.confirmImageSize = function () {
+            var _this$state = _this.state,
+                width = _this$state.tempWidth,
+                height = _this$state.tempHeight;
+
+            var newImageSize = {};
+
+            width !== null && (newImageSize.width = width);
+            height !== null && (newImageSize.height = height);
+
+            _this.props.editor.setMediaData(_this.props.entityKey, newImageSize);
+            window.setImmediate(_this.props.editor.forceRender);
+        }, _this.setImageFloat = function (e) {
+            var float = e.currentTarget.dataset.float;
+
+            _this.props.editor.setMediaPosition(_this.props.block, { float: float });
+            _this.props.editor.setEditorProp('readOnly', false);
+        }, _this.setImageAlignment = function (e) {
+            var alignment = e.currentTarget.dataset.alignment;
+
+            _this.props.editor.setMediaPosition(_this.props.block, { alignment: alignment });
+            _this.props.editor.setEditorProp('readOnly', false);
+        }, _this.showToolbar = function () {
+
+            if (!_this.state.toolbarVisible) {
+                _this.setState({
+                    toolbarVisible: true
+                }, function () {
+                    _this.props.editor.setEditorProp('readOnly', true);
+                    _this.setState({
+                        toolbarOffset: _this.calcToolbarOffset()
+                    });
+                });
+            }
+        }, _this.hideToolbar = function () {
+            _this.setState({
+                toolbarVisible: false
+            }, function () {
+                _this.props.editor.setEditorProp('readOnly', false);
+            });
+        }, _temp), _possibleConstructorReturn(_this, _ret);
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Image.__proto__ || Object.getPrototypeOf(Image)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
-      toolbarVisible: false,
-      toolbarOffset: 0,
-      linkEditorVisible: false,
-      sizeEditorVisible: false,
-      tempLink: null,
-      tempWidth: null,
-      tempHeight: null
-    }, _this.removeImage = function (e) {
-      _this.props.editor.removeBlock(_this.props.block);
-      _this.props.editor.setEditorProp('readOnly', false);
-    }, _this.toggleLinkEditor = function () {
-      _this.setState({
-        linkEditorVisible: !_this.state.linkEditorVisible,
-        sizeEditorVisible: false
-      });
-    }, _this.toggleSizeEditor = function () {
-      _this.setState({
-        linkEditorVisible: false,
-        sizeEditorVisible: !_this.state.sizeEditorVisible
-      });
-    }, _this.handleLinkInputKeyDown = function (e) {
+    _createClass(Image, [{
+        key: 'render',
+        value: function render() {
+            var _this2 = this;
 
-      if (e.keyCode === 13) {
-        _this.confirmImageLink();
-      } else {
-        return;
-      }
-    }, _this.setImageLink = function (e) {
+            var _props = this.props,
+                mediaData = _props.mediaData,
+                language = _props.language,
+                imageControls = _props.imageControls;
+            var _state = this.state,
+                toolbarVisible = _state.toolbarVisible,
+                toolbarOffset = _state.toolbarOffset,
+                linkEditorVisible = _state.linkEditorVisible,
+                sizeEditorVisible = _state.sizeEditorVisible;
 
-      _this.setState({
-        tempLink: e.currentTarget.value
-      });
+            var blockData = this.props.block.getData();
 
-      return;
-    }, _this.confirmImageLink = function () {
-      var link = _this.state.tempLink;
+            var float = blockData.get('float');
+            var alignment = blockData.get('alignment');
+            var url = mediaData.url,
+                link = mediaData.link,
+                link_target = mediaData.link_target,
+                width = mediaData.width,
+                height = mediaData.height;
 
+            var imageStyles = {};
+            var clearFix = false;
 
-      if (link !== null) {
-        _this.props.editor.setMediaData(_this.props.entityKey, { link: link });
-        window.setImmediate(_this.props.editor.forceRender);
-      }
-    }, _this.handleSizeInputKeyDown = function (e) {
+            if (float) {
+                alignment = null;
+            } else if (alignment === 'left') {
+                imageStyles.float = 'left';
+                clearFix = true;
+            } else if (alignment === 'right') {
+                imageStyles.float = 'right';
+                clearFix = true;
+            } else if (alignment === 'center') {
+                imageStyles.textAlign = "center";
+            } else {
+                imageStyles.float = 'left';
+                clearFix = true;
+            }
 
-      if (e.keyCode === 13) {
-        _this.confirmImageSize();
-      } else {
-        return;
-      }
-    }, _this.setImageWidth = function (_ref2) {
-      var currentTarget = _ref2.currentTarget;
-      var value = currentTarget.value;
-
-
-      value && !isNaN(value) && (value = value + 'px');
-
-      _this.setState({
-        tempWidth: value
-      });
-
-      return;
-    }, _this.setImageHeight = function (_ref3) {
-      var currentTarget = _ref3.currentTarget;
-      var value = currentTarget.value;
-
-
-      value && !isNaN(value) && (value = value + 'px');
-
-      _this.setState({
-        tempHeight: value
-      });
-
-      return;
-    }, _this.confirmImageSize = function () {
-      var _this$state = _this.state,
-          width = _this$state.tempWidth,
-          height = _this$state.tempHeight;
-
-      var newImageSize = {};
-
-      width !== null && (newImageSize.width = width);
-      height !== null && (newImageSize.height = height);
-
-      _this.props.editor.setMediaData(_this.props.entityKey, newImageSize);
-      window.setImmediate(_this.props.editor.forceRender);
-    }, _this.setImageFloat = function (e) {
-      var float = e.currentTarget.dataset.float;
-
-      _this.props.editor.setMediaPosition(_this.props.block, { float: float });
-      _this.props.editor.setEditorProp('readOnly', false);
-    }, _this.setImageAlignment = function (e) {
-      var alignment = e.currentTarget.dataset.alignment;
-
-      _this.props.editor.setMediaPosition(_this.props.block, { alignment: alignment });
-      _this.props.editor.setEditorProp('readOnly', false);
-    }, _this.showToolbar = function () {
-
-      if (!_this.state.toolbarVisible) {
-        _this.setState({
-          toolbarVisible: true
-        }, function () {
-          _this.props.editor.setEditorProp('readOnly', true);
-          _this.setState({
-            toolbarOffset: _this.calcToolbarOffset()
-          });
-        });
-      }
-    }, _this.hideToolbar = function () {
-      _this.setState({
-        toolbarVisible: false
-      }, function () {
-        _this.props.editor.setEditorProp('readOnly', false);
-      });
-    }, _temp), _possibleConstructorReturn(_this, _ret);
-  }
-
-  _createClass(Image, [{
-    key: 'render',
-    value: function render() {
-      var _this2 = this;
-
-      var _props = this.props,
-          mediaData = _props.mediaData,
-          language = _props.language,
-          imageControls = _props.imageControls;
-      var _state = this.state,
-          toolbarVisible = _state.toolbarVisible,
-          toolbarOffset = _state.toolbarOffset,
-          linkEditorVisible = _state.linkEditorVisible,
-          sizeEditorVisible = _state.sizeEditorVisible;
-
-      var blockData = this.props.block.getData();
-
-      var float = blockData.get('float');
-      var alignment = blockData.get('alignment');
-      var url = mediaData.url,
-          link = mediaData.link,
-          link_target = mediaData.link_target,
-          width = mediaData.width,
-          height = mediaData.height;
-
-      var imageStyles = {};
-      var clearFix = false;
-
-      if (float) {
-        alignment = null;
-      } else if (alignment === 'left') {
-        imageStyles.float = 'left';
-        clearFix = true;
-      } else if (alignment === 'right') {
-        imageStyles.float = 'right';
-        clearFix = true;
-      } else if (alignment === 'center') {
-        imageStyles.textAlign = "center";
-      } else {
-        imageStyles.float = 'left';
-        clearFix = true;
-      }
-
-      return _react2.default.createElement(
-        'div',
-        { className: 'braft-media-embeder' },
-        _react2.default.createElement(
-          'div',
-          {
-            style: imageStyles,
-            className: 'braft-embed-image',
-            onMouseOver: this.showToolbar,
-            onMouseLeave: this.hideToolbar
-          },
-          toolbarVisible && _react2.default.createElement(
-            'div',
-            {
-              style: { marginLeft: toolbarOffset },
-              ref: function ref(instance) {
-                return _this2.toolbarElement = instance;
-              },
-              'data-float': float,
-              'data-alignment': alignment,
-              className: 'braft-embed-image-toolbar'
-            },
-            linkEditorVisible ? _react2.default.createElement(
-              'div',
-              { onClick: this.preventDefault, className: 'braft-embed-image-link-editor' },
-              _react2.default.createElement(
+            return _react2.default.createElement(
                 'div',
-                { className: 'editor-input-group' },
-                _react2.default.createElement('input', { type: 'text', placeholder: language.linkEditor.inputWithEnterPlaceHolder, onKeyDown: this.handleLinkInputKeyDown, onChange: this.setImageLink, defaultValue: link }),
+                { className: 'braft-media-embeder' },
                 _react2.default.createElement(
-                  'button',
-                  { type: 'button', onClick: this.confirmImageLink },
-                  language.base.confirm
-                )
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'switch-group' },
-                _react2.default.createElement(_Switch2.default, {
-                  active: link_target === '_blank',
-                  onClick: function onClick() {
-                    return _this2.setImageLinkTarget(link_target);
-                  }
-                }),
-                _react2.default.createElement(
-                  'label',
-                  null,
-                  language.linkEditor.openInNewWindow
-                )
-              )
-            ) : null,
-            sizeEditorVisible ? _react2.default.createElement(
-              'div',
-              { onClick: this.preventDefault, className: 'braft-embed-image-size-editor' },
-              _react2.default.createElement(
-                'div',
-                { className: 'editor-input-group' },
-                _react2.default.createElement('input', { type: 'text', placeholder: language.base.width, onKeyDown: this.handleSizeInputKeyDown, onChange: this.setImageWidth, defaultValue: width }),
-                _react2.default.createElement('input', { type: 'text', placeholder: language.base.height, onKeyDown: this.handleSizeInputKeyDown, onChange: this.setImageHeight, defaultValue: height }),
-                _react2.default.createElement(
-                  'button',
-                  { type: 'button', onClick: this.confirmImageSize },
-                  language.base.confirm
-                )
-              )
-            ) : null,
-            imageControls.floatLeft ? _react2.default.createElement(
-              'a',
-              { 'data-float': 'left', onClick: this.setImageFloat },
-              '\uE91E'
-            ) : null,
-            imageControls.floatRight ? _react2.default.createElement(
-              'a',
-              { 'data-float': 'right', onClick: this.setImageFloat },
-              '\uE914'
-            ) : null,
-            imageControls.alignLeft ? _react2.default.createElement(
-              'a',
-              { 'data-alignment': 'left', onClick: this.setImageAlignment },
-              '\uE027'
-            ) : null,
-            imageControls.alignCenter ? _react2.default.createElement(
-              'a',
-              { 'data-alignment': 'center', onClick: this.setImageAlignment },
-              '\uE028'
-            ) : null,
-            imageControls.alignRight ? _react2.default.createElement(
-              'a',
-              { 'data-alignment': 'right', onClick: this.setImageAlignment },
-              '\uE029'
-            ) : null,
-            imageControls.size ? _react2.default.createElement(
-              'a',
-              { onClick: this.toggleSizeEditor },
-              '\uE3C2'
-            ) : null,
-            imageControls.link ? _react2.default.createElement(
-              'a',
-              { className: link ? 'active' : '', onClick: this.toggleLinkEditor },
-              '\uE91A'
-            ) : null,
-            imageControls.remove ? _react2.default.createElement(
-              'a',
-              { onClick: this.removeImage },
-              '\uE9AC'
-            ) : null,
-            _react2.default.createElement('i', { style: { marginLeft: toolbarOffset * -1 }, className: 'braft-embed-image-toolbar-arrow' })
-          ),
-          _react2.default.createElement('img', {
-            ref: function ref(instance) {
-              return _this2.imageElement = instance;
-            },
-            src: url, style: { width: width, height: height }, width: width, height: height
-          })
-        ),
-        clearFix && _react2.default.createElement('div', { className: 'clearfix', style: { clear: 'both', height: 0, lineHeight: 0, float: 'none' } })
-      );
-    }
-  }, {
-    key: 'calcToolbarOffset',
-    value: function calcToolbarOffset() {
+                    'div',
+                    {
+                        style: imageStyles,
+                        className: 'braft-embed-image',
+                        onMouseOver: this.showToolbar,
+                        onMouseLeave: this.hideToolbar
+                    },
+                    toolbarVisible && _react2.default.createElement(
+                        'div',
+                        {
+                            style: { marginLeft: toolbarOffset },
+                            ref: function ref(instance) {
+                                return _this2.toolbarElement = instance;
+                            },
+                            'data-float': float,
+                            'data-alignment': alignment,
+                            className: 'braft-embed-image-toolbar'
+                        },
+                        linkEditorVisible ? _react2.default.createElement(
+                            'div',
+                            { onClick: this.preventDefault, className: 'braft-embed-image-link-editor' },
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'editor-input-group' },
+                                _react2.default.createElement('input', { type: 'text', placeholder: language.linkEditor.inputWithEnterPlaceHolder,
+                                    onKeyDown: this.handleLinkInputKeyDown, onChange: this.setImageLink,
+                                    defaultValue: link }),
+                                _react2.default.createElement(
+                                    'button',
+                                    { type: 'button',
+                                        onClick: this.confirmImageLink },
+                                    language.base.confirm
+                                )
+                            ),
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'switch-group' },
+                                _react2.default.createElement(_Switch2.default, {
+                                    active: link_target === '_blank',
+                                    onClick: function onClick() {
+                                        return _this2.setImageLinkTarget(link_target);
+                                    }
+                                }),
+                                _react2.default.createElement(
+                                    'label',
+                                    null,
+                                    language.linkEditor.openInNewWindow
+                                )
+                            )
+                        ) : null,
+                        sizeEditorVisible ? _react2.default.createElement(
+                            'div',
+                            { onClick: this.preventDefault, className: 'braft-embed-image-size-editor' },
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'editor-input-group' },
+                                _react2.default.createElement('input', { type: 'text', placeholder: language.base.width,
+                                    onKeyDown: this.handleSizeInputKeyDown, onChange: this.setImageWidth,
+                                    defaultValue: width }),
+                                _react2.default.createElement('input', { type: 'text', placeholder: language.base.height,
+                                    onKeyDown: this.handleSizeInputKeyDown, onChange: this.setImageHeight,
+                                    defaultValue: height }),
+                                _react2.default.createElement(
+                                    'button',
+                                    { type: 'button',
+                                        onClick: this.confirmImageSize },
+                                    language.base.confirm
+                                )
+                            )
+                        ) : null,
+                        imageControls.floatLeft ? _react2.default.createElement(
+                            'a',
+                            { 'data-float': 'left', onClick: this.setImageFloat },
+                            '\uE91E'
+                        ) : null,
+                        imageControls.floatRight ? _react2.default.createElement(
+                            'a',
+                            { 'data-float': 'right', onClick: this.setImageFloat },
+                            '\uE914'
+                        ) : null,
+                        imageControls.alignLeft ? _react2.default.createElement(
+                            'a',
+                            { 'data-alignment': 'left', onClick: this.setImageAlignment },
+                            '\uE027'
+                        ) : null,
+                        imageControls.alignCenter ? _react2.default.createElement(
+                            'a',
+                            { 'data-alignment': 'center', onClick: this.setImageAlignment },
+                            '\uE028'
+                        ) : null,
+                        imageControls.alignRight ? _react2.default.createElement(
+                            'a',
+                            { 'data-alignment': 'right', onClick: this.setImageAlignment },
+                            '\uE029'
+                        ) : null,
+                        imageControls.size ? _react2.default.createElement(
+                            'a',
+                            { onClick: this.toggleSizeEditor },
+                            '\uE3C2'
+                        ) : null,
+                        imageControls.link ? _react2.default.createElement(
+                            'a',
+                            { className: link ? 'active' : '', onClick: this.toggleLinkEditor },
+                            '\uE91A'
+                        ) : null,
+                        imageControls.remove ? _react2.default.createElement(
+                            'a',
+                            { onClick: this.removeImage },
+                            '\uE9AC'
+                        ) : null,
+                        _react2.default.createElement('i', { style: { marginLeft: toolbarOffset * -1 }, className: 'braft-embed-image-toolbar-arrow' })
+                    ),
+                    _react2.default.createElement('img', {
+                        ref: function ref(instance) {
+                            return _this2.imageElement = instance;
+                        },
+                        src: url, style: { width: width, height: height }, width: width, height: height,
+                        'data-origin-width': mediaData['data-origin-width'],
+                        'data-origin-height': mediaData['data-origin-height']
+                    })
+                ),
+                clearFix && _react2.default.createElement('div', { className: 'clearfix', style: { clear: 'both', height: 0, lineHeight: 0, float: 'none' } })
+            );
+        }
+    }, {
+        key: 'calcToolbarOffset',
+        value: function calcToolbarOffset() {
 
-      var viewRect = null;
+            var viewRect = null;
 
-      if (this.props.viewWrapper) {
-        viewRect = document.querySelector(this.props.viewWrapper).getBoundingClientRect();
-      } else {
-        viewRect = document.body.getBoundingClientRect();
-      }
+            if (this.props.viewWrapper) {
+                viewRect = document.querySelector(this.props.viewWrapper).getBoundingClientRect();
+            } else {
+                viewRect = document.body.getBoundingClientRect();
+            }
 
-      var toolbarRect = this.toolbarElement.getBoundingClientRect();
-      var imageRect = this.imageElement.getBoundingClientRect();
-      var right = imageRect.right - imageRect.width / 2 + toolbarRect.width / 2;
-      var left = imageRect.left + imageRect.width / 2 - toolbarRect.width / 2;
+            var toolbarRect = this.toolbarElement.getBoundingClientRect();
+            var imageRect = this.imageElement.getBoundingClientRect();
+            var right = imageRect.right - imageRect.width / 2 + toolbarRect.width / 2;
+            var left = imageRect.left + imageRect.width / 2 - toolbarRect.width / 2;
 
-      right = viewRect.right - right;
-      left = left - viewRect.left;
+            right = viewRect.right - right;
+            left = left - viewRect.left;
 
-      if (right < 10) {
-        return right - 10;
-      } else if (left < 10) {
-        return left * -1 + 10;
-      } else {
-        return 0;
-      }
-    }
-  }, {
-    key: 'setImageLinkTarget',
-    value: function setImageLinkTarget(link_target) {
+            if (right < 10) {
+                return right - 10;
+            } else if (left < 10) {
+                return left * -1 + 10;
+            } else {
+                return 0;
+            }
+        }
+    }, {
+        key: 'setImageLinkTarget',
+        value: function setImageLinkTarget(link_target) {
 
-      link_target = link_target === '_blank' ? '' : '_blank';
-      this.props.editor.setMediaData(this.props.entityKey, { link_target: link_target });
-      window.setImmediate(this.props.editor.forceRender);
-    }
-  }]);
+            link_target = link_target === '_blank' ? '' : '_blank';
+            this.props.editor.setMediaData(this.props.entityKey, { link_target: link_target });
+            window.setImmediate(this.props.editor.forceRender);
+        }
+    }]);
 
-  return Image;
+    return Image;
 }(_react2.default.Component);
 
 exports.default = Image;
