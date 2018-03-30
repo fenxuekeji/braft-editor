@@ -225,7 +225,8 @@ const htmlToEntity = (nodeName, node, createEntity) => {
     width = width || 'auto'
     height = height || 'auto'
 
-    let entityData = { url, width, height }
+    let entityData = { url, width, height,"data-origin-width": node['data-origin-width'],
+        "data-origin-height": node['data-origin-height']}
 
     if (parentNode.nodeName.toLowerCase() === 'a') {
       entityData.link = parentNode.href
