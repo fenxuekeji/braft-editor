@@ -7187,6 +7187,8 @@ var convertAtomicBlock = function convertAtomicBlock(block, contentState) {
       imageWrapStyle.textAlign = alignment;
       styledClassName += ' align-' + alignment;
     }
+    console.log("kkkkkkk=====>", mediaType, "--content", contentBlock, "ent", entity);
+    console.log("eeeee===>", entity.getData());
 
     if (link) {
       return _react2.default.createElement(
@@ -7195,14 +7197,14 @@ var convertAtomicBlock = function convertAtomicBlock(block, contentState) {
         _react2.default.createElement(
           'a',
           { style: { display: 'inline-block' }, href: link, target: link_target },
-          _react2.default.createElement('img', { src: url, width: width, height: height, style: { width: width, height: height } })
+          _react2.default.createElement('img', { src: url, 'data-origin-width': entity.getData()["data-origin-width"], 'data-origin-height': entity.getData()["data-origin-height"], width: width, height: height, style: { width: width, height: height } })
         )
       );
     } else {
       return _react2.default.createElement(
         'div',
         { className: "media-wrap image-wrap" + styledClassName, style: imageWrapStyle },
-        _react2.default.createElement('img', { src: url, width: width, height: height, style: { width: width, height: height } })
+        _react2.default.createElement('img', { src: url, 'data-origin-width': entity.getData()["data-origin-width"], 'data-origin-height': entity.getData()["data-origin-height"], width: width, height: height, style: { width: width, height: height } })
       );
     }
   } else if (mediaType === 'audio') {

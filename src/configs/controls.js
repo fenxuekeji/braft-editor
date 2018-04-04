@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default (lang) => [
+  export default (lang) => [
   {
     key: 'undo',
     title: lang.controls.undo,
@@ -99,7 +99,7 @@ export default (lang) => [
     type: 'text-color'
   },  {
     key: 'line-height',
-    title: lang.controls.lineHeight, 
+    title: lang.controls.lineHeight,
     type: 'line-height'
   }, {
     key: 'letter-spacing',

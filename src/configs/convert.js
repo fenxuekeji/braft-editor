@@ -27,19 +27,21 @@ const convertAtomicBlock = (block, contentState) => {
       imageWrapStyle.textAlign = alignment
       styledClassName += ' align-' + alignment
     }
+    console.log("kkkkkkk=====>",mediaType,"--content",contentBlock,"ent",entity)
+    console.log("eeeee===>",entity.getData())
 
     if (link) {
       return (
         <div className={"media-wrap image-wrap" + styledClassName} style={imageWrapStyle}>
           <a style={{display:'inline-block'}} href={link} target={link_target}>
-            <img src={url} width={width} height={height} style={{width, height}} />
+            <img src={url} data-origin-width={entity.getData()["data-origin-width"]} data-origin-height={entity.getData()["data-origin-height"]} width={width} height={height} style={{width, height}} />
           </a>
         </div>
       )
     } else {
       return (
         <div className={"media-wrap image-wrap" + styledClassName} style={imageWrapStyle}>
-          <img src={url} width={width} height={height} style={{width, height}}/>
+          <img src={url} data-origin-width={entity.getData()["data-origin-width"]} data-origin-height={entity.getData()["data-origin-height"]} width={width} height={height} style={{width, height}}/>
         </div>
       )
     }
@@ -73,7 +75,7 @@ const styleToHTML = (props) => (style) => {
   } else if (style.indexOf('fontsize-') === 0) {
     return <braftspan style={{fontSize: style.split('-')[1] + 'px'}} isbrafttag="1"/>
   } else if (style.indexOf('lineheight-') === 0) {
-    return <braftspan style={{lineHeight: style.split('-')[1]}} isbrafttag="1"/> 
+    return <braftspan style={{lineHeight: style.split('-')[1]}} isbrafttag="1"/>
   } else if (style.indexOf('letterspacing-') === 0) {
     return <braftspan style={{letterSpacing: style.split('-')[1] + 'px'}} isbrafttag="1"/>
   } else if (style.indexOf('indent-') === 0) {
@@ -215,9 +217,9 @@ const htmlToEntity = (nodeName, node, createEntity) => {
     let { href, target } = node
     return createEntity('LINK', 'MUTABLE',{ href, target })
   } else if (nodeName === 'audio') {
-    return createEntity('AUDIO', 'IMMUTABLE',{ url: node.src }) 
+    return createEntity('AUDIO', 'IMMUTABLE',{ url: node.src })
   } else if (nodeName === 'video') {
-    return createEntity('VIDEO', 'IMMUTABLE',{ url: node.src }) 
+    return createEntity('VIDEO', 'IMMUTABLE',{ url: node.src })
   } else if (nodeName === 'img') {
 
     let parentNode = node.parentNode
@@ -233,10 +235,10 @@ const htmlToEntity = (nodeName, node, createEntity) => {
       entityData.link_target = parentNode.target
     }
 
-    return createEntity('IMAGE', 'IMMUTABLE', entityData) 
+    return createEntity('IMAGE', 'IMMUTABLE', entityData)
 
   } else if (nodeName === 'hr') {
-    return createEntity('HR', 'IMMUTABLE', {}) 
+    return createEntity('HR', 'IMMUTABLE', {})
   }
 
 }
@@ -297,10 +299,10 @@ export const getToHTMLConfig = (props) => {
 
 export const getFromHTMLConfig = (props) => {
 
-  return { 
+  return {
     htmlToStyle: htmlToStyle(props),
     htmlToEntity,
-    htmlToBlock 
+    htmlToBlock
   }
 
 }
