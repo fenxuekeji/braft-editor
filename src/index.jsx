@@ -171,6 +171,7 @@ export default class BraftEditor extends EditorController {
       content = content || ''
       newState.tempColors = [...this.state.tempColors, ...detectColorsFromHTML(content)].filter(item => this.props.colors.indexOf(item) === -1).filter((item, index, array) => array.indexOf(item) === index)
       convertedContent = convertFromHTML(getFromHTMLConfig({ fontFamilies }))(convertCodeBlock(content))
+      console.log("cccc=======>",convertedContent)
     } else if (contentFormat === 'raw') {
       if (!content || !content.blocks) {
         return false

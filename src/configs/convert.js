@@ -227,13 +227,15 @@ const htmlToEntity = (nodeName, node, createEntity) => {
     width = width || 'auto'
     height = height || 'auto'
 
-    let entityData = { url, width, height,"data-origin-width": node['data-origin-width'],
-        "data-origin-height": node['data-origin-height']}
+    let entityData = { url, width, height,"data-origin-width": node.attributes['data-origin-width'].nodeValue,
+        "data-origin-height": node.attributes['data-origin-height'].nodeValue}
 
     if (parentNode.nodeName.toLowerCase() === 'a') {
       entityData.link = parentNode.href
       entityData.link_target = parentNode.target
     }
+    console.log("999999999 entityData----",entityData)
+    console.log("999999999 createEntity----",createEntity('IMAGE', 'IMMUTABLE', entityData))
 
     return createEntity('IMAGE', 'IMMUTABLE', entityData)
 
