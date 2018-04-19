@@ -7416,16 +7416,16 @@ var htmlToEntity = function htmlToEntity(nodeName, node, createEntity) {
 
     width = width || 'auto';
     height = height || 'auto';
-
-    var entityData = { url: url, width: width, height: height, "data-origin-width": node.attributes['data-origin-width'].nodeValue,
-      "data-origin-height": node.attributes['data-origin-height'].nodeValue };
+    var entityData = { url: url, width: width, height: height };
+    if (node.attributes['data-origin-width'] && node.attributes['data-origin-height']) {
+      entityData["data-origin-width"] = node.attributes['data-origin-width'].nodeValue;
+      entityData["data-origin-height"] = node.attributes['data-origin-height'].nodeValue;
+    }
 
     if (parentNode.nodeName.toLowerCase() === 'a') {
       entityData.link = parentNode.href;
       entityData.link_target = parentNode.target;
     }
-    console.log("999999999 entityData----", entityData);
-    console.log("999999999 createEntity----", createEntity('IMAGE', 'IMMUTABLE', entityData));
 
     return createEntity('IMAGE', 'IMMUTABLE', entityData);
   } else if (nodeName === 'hr') {
