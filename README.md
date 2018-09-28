@@ -34,4 +34,4 @@ that.editorInstance.insertMedias(Objects)
 ```
 在Objects参数中添加 {"data-origin-width": "xxx","data-origin-height": "xxx"}属性
 
-![图片说明1](http://oq6mydfqf.bkt.clouddn.com/E5A9226D-24F6-4269-A029-7193C93CB60F.jpg?imageView/2/w/619)
+![图片说明1](http://o6sfjf3zh.bkt.clouddn.com/E5A9226D-24F6-4269-A029-7193C93CB60F.png?imageView/2/w/619)
