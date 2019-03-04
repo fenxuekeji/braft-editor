@@ -47,9 +47,9 @@ const convertAtomicBlock = (block, contentState) => {
     }
 
   } else if (mediaType === 'audio') {
-    return <div className="media-wrap audio-wrap"><audio controls src={url} /></div>
+    return <div className="media-wrap audio-wrap"><audio controls src={url} data-file-size={entity.getData()["data-file-size"]}/></div>
   } else if (mediaType === 'video') {
-    return <div className="media-wrap video-wrap"><video controls src={url} width={width} height={height} /></div>
+    return <div className="media-wrap video-wrap"><video controls src={url} width={width} height={height} data-file-size={entity.getData()["data-file-size"]}/></div>
   } else if (mediaType === 'hr') {
     return <hr></hr>
   } else {
@@ -217,9 +217,9 @@ const htmlToEntity = (nodeName, node, createEntity) => {
     let { href, target } = node
     return createEntity('LINK', 'MUTABLE',{ href, target })
   } else if (nodeName === 'audio') {
-    return createEntity('AUDIO', 'IMMUTABLE',{ url: node.src })
+    return createEntity('AUDIO', 'IMMUTABLE',{ url: node.src , 'data-file-size': node.attributes['data-file-size'].nodeValue })
   } else if (nodeName === 'video') {
-    return createEntity('VIDEO', 'IMMUTABLE',{ url: node.src })
+    return createEntity('VIDEO', 'IMMUTABLE',{ url: node.src , 'data-file-size': node.attributes['data-file-size'].nodeValue })
   } else if (nodeName === 'img') {
 
     let parentNode = node.parentNode

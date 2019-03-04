@@ -245,6 +245,7 @@ export default class EditorController extends React.Component {
                 name,
                 type,
                 meta,
+                "data-file-size": media['data-file-size'],
                 "data-origin-width": media['data-origin-width'],
                 "data-origin-height": media['data-origin-height'],
             })
