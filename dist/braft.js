@@ -7211,13 +7211,13 @@ var convertAtomicBlock = function convertAtomicBlock(block, contentState) {
     return _react2.default.createElement(
       'div',
       { className: 'media-wrap audio-wrap' },
-      _react2.default.createElement('audio', { controls: true, src: url })
+      _react2.default.createElement('audio', { controls: true, src: url, 'data-file-size': entity.getData()["data-file-size"] })
     );
   } else if (mediaType === 'video') {
     return _react2.default.createElement(
       'div',
       { className: 'media-wrap video-wrap' },
-      _react2.default.createElement('video', { controls: true, src: url, width: width, height: height })
+      _react2.default.createElement('video', { controls: true, src: url, width: width, height: height, 'data-file-size': entity.getData()["data-file-size"] })
     );
   } else if (mediaType === 'hr') {
     return _react2.default.createElement('hr', null);
@@ -7404,9 +7404,9 @@ var htmlToEntity = function htmlToEntity(nodeName, node, createEntity) {
 
     return createEntity('LINK', 'MUTABLE', { href: href, target: target });
   } else if (nodeName === 'audio') {
-    return createEntity('AUDIO', 'IMMUTABLE', { url: node.src });
+    return createEntity('AUDIO', 'IMMUTABLE', { url: node.src, 'data-file-size': node.attributes['data-file-size'].nodeValue });
   } else if (nodeName === 'video') {
-    return createEntity('VIDEO', 'IMMUTABLE', { url: node.src });
+    return createEntity('VIDEO', 'IMMUTABLE', { url: node.src, 'data-file-size': node.attributes['data-file-size'].nodeValue });
   } else if (nodeName === 'img') {
 
     var parentNode = node.parentNode;
@@ -7851,6 +7851,7 @@ var EditorController = function (_React$Component) {
                     name: name,
                     type: type,
                     meta: meta,
+                    "data-file-size": media['data-file-size'],
                     "data-origin-width": media['data-origin-width'],
                     "data-origin-height": media['data-origin-height']
                 });
