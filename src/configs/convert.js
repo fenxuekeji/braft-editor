@@ -219,9 +219,16 @@ const htmlToEntity = (nodeName, node, createEntity) => {
     if(node.attributes['data-file-size']) attrs['data-file-size']= node.attributes['data-file-size'].nodeValue;
     return createEntity('AUDIO', 'IMMUTABLE',attrs)
   } else if (nodeName === 'video') {
-    let attrs = { url: node.src };
-    if(node.attributes['data-file-size']) attrs['data-file-size']= node.attributes['data-file-size'].nodeValue;
-    return createEntity('VIDEO', 'IMMUTABLE',attrs)
+    let { src: url, width, height } = node
+    width = width || 'auto'
+    height = height || 'auto'
+    let entityData = { url, width, height};
+    if(node.attributes['data-origin-width'] && node.attributes['data-origin-height']){
+        attrs["data-origin-width"] = node.attributes['data-origin-width'].nodeValue;
+        attrs["data-origin-height"] = node.attributes['data-origin-height'].nodeValue;
+    }
+    if(node.attributes['data-file-size']) entityData['data-file-size']= node.attributes['data-file-size'].nodeValue;
+    return createEntity('VIDEO', 'IMMUTABLE',entityData);
   } else if (nodeName === 'img') {
     let parentNode = node.parentNode
     let { src: url, width, height } = node

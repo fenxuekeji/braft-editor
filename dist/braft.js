@@ -7402,15 +7402,10 @@ var htmlToEntity = function htmlToEntity(nodeName, node, createEntity) {
 
     return createEntity('LINK', 'MUTABLE', { href: href, target: target });
   } else if (nodeName === 'audio') {
-    var attrs = { url: node.src };
-    if (node.attributes['data-file-size']) attrs['data-file-size'] = node.attributes['data-file-size'].nodeValue;
-    return createEntity('AUDIO', 'IMMUTABLE', attrs);
-  } else if (nodeName === 'video') {
     var _attrs = { url: node.src };
     if (node.attributes['data-file-size']) _attrs['data-file-size'] = node.attributes['data-file-size'].nodeValue;
-    return createEntity('VIDEO', 'IMMUTABLE', _attrs);
-  } else if (nodeName === 'img') {
-    var parentNode = node.parentNode;
+    return createEntity('AUDIO', 'IMMUTABLE', _attrs);
+  } else if (nodeName === 'video') {
     var url = node.src,
         width = node.width,
         height = node.height;
@@ -7419,16 +7414,31 @@ var htmlToEntity = function htmlToEntity(nodeName, node, createEntity) {
     height = height || 'auto';
     var entityData = { url: url, width: width, height: height };
     if (node.attributes['data-origin-width'] && node.attributes['data-origin-height']) {
-      entityData["data-origin-width"] = node.attributes['data-origin-width'].nodeValue;
-      entityData["data-origin-height"] = node.attributes['data-origin-height'].nodeValue;
+      attrs["data-origin-width"] = node.attributes['data-origin-width'].nodeValue;
+      attrs["data-origin-height"] = node.attributes['data-origin-height'].nodeValue;
+    }
+    if (node.attributes['data-file-size']) entityData['data-file-size'] = node.attributes['data-file-size'].nodeValue;
+    return createEntity('VIDEO', 'IMMUTABLE', entityData);
+  } else if (nodeName === 'img') {
+    var parentNode = node.parentNode;
+    var _url = node.src,
+        _width = node.width,
+        _height = node.height;
+
+    _width = _width || 'auto';
+    _height = _height || 'auto';
+    var _entityData = { url: _url, width: _width, height: _height };
+    if (node.attributes['data-origin-width'] && node.attributes['data-origin-height']) {
+      _entityData["data-origin-width"] = node.attributes['data-origin-width'].nodeValue;
+      _entityData["data-origin-height"] = node.attributes['data-origin-height'].nodeValue;
     }
 
     if (parentNode.nodeName.toLowerCase() === 'a') {
-      entityData.link = parentNode.href;
-      entityData.link_target = parentNode.target;
+      _entityData.link = parentNode.href;
+      _entityData.link_target = parentNode.target;
     }
 
-    return createEntity('IMAGE', 'IMMUTABLE', entityData);
+    return createEntity('IMAGE', 'IMMUTABLE', _entityData);
   } else if (nodeName === 'hr') {
     return createEntity('HR', 'IMMUTABLE', {});
   }
