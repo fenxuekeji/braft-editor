@@ -7187,8 +7187,6 @@ var convertAtomicBlock = function convertAtomicBlock(block, contentState) {
       imageWrapStyle.textAlign = alignment;
       styledClassName += ' align-' + alignment;
     }
-    console.log("kkkkkkk=====>", mediaType, "--content", contentBlock, "ent", entity);
-    console.log("eeeee===>", entity.getData());
 
     if (link) {
       return _react2.default.createElement(
@@ -7404,11 +7402,14 @@ var htmlToEntity = function htmlToEntity(nodeName, node, createEntity) {
 
     return createEntity('LINK', 'MUTABLE', { href: href, target: target });
   } else if (nodeName === 'audio') {
-    return createEntity('AUDIO', 'IMMUTABLE', { url: node.src, 'data-file-size': node.attributes['data-file-size'].nodeValue });
+    var attrs = { url: node.src };
+    if (node.attributes['data-file-size']) attrs['data-file-size'] = node.attributes['data-file-size'].nodeValue;
+    return createEntity('AUDIO', 'IMMUTABLE', attrs);
   } else if (nodeName === 'video') {
-    return createEntity('VIDEO', 'IMMUTABLE', { url: node.src, 'data-file-size': node.attributes['data-file-size'].nodeValue });
+    var _attrs = { url: node.src };
+    if (node.attributes['data-file-size']) _attrs['data-file-size'] = node.attributes['data-file-size'].nodeValue;
+    return createEntity('VIDEO', 'IMMUTABLE', _attrs);
   } else if (nodeName === 'img') {
-
     var parentNode = node.parentNode;
     var url = node.src,
         width = node.width,
