@@ -27,8 +27,6 @@ const convertAtomicBlock = (block, contentState) => {
       imageWrapStyle.textAlign = alignment
       styledClassName += ' align-' + alignment
     }
-    console.log("kkkkkkk=====>",mediaType,"--content",contentBlock,"ent",entity)
-    console.log("eeeee===>",entity.getData())
 
     if (link) {
       return (
@@ -217,19 +215,22 @@ const htmlToEntity = (nodeName, node, createEntity) => {
     let { href, target } = node
     return createEntity('LINK', 'MUTABLE',{ href, target })
   } else if (nodeName === 'audio') {
-    return createEntity('AUDIO', 'IMMUTABLE',{ url: node.src , 'data-file-size': node.attributes['data-file-size'].nodeValue })
+    let attrs = { url: node.src };
+    if(node.attributes['data-file-size']) attrs['data-file-size']= node.attributes['data-file-size'].nodeValue;
+    return createEntity('AUDIO', 'IMMUTABLE',attrs)
   } else if (nodeName === 'video') {
-    return createEntity('VIDEO', 'IMMUTABLE',{ url: node.src , 'data-file-size': node.attributes['data-file-size'].nodeValue })
+    let attrs = { url: node.src };
+    if(node.attributes['data-file-size']) attrs['data-file-size']= node.attributes['data-file-size'].nodeValue;
+    return createEntity('VIDEO', 'IMMUTABLE',attrs)
   } else if (nodeName === 'img') {
-
     let parentNode = node.parentNode
     let { src: url, width, height } = node
     width = width || 'auto'
     height = height || 'auto'
     let entityData = { url, width, height};
     if(node.attributes['data-origin-width'] && node.attributes['data-origin-height']){
-      entityData["data-origin-width"]=node.attributes['data-origin-width'].nodeValue;
-      entityData["data-origin-height"]=node.attributes['data-origin-height'].nodeValue;
+      entityData["data-origin-width"] = node.attributes['data-origin-width'].nodeValue;
+      entityData["data-origin-height"] = node.attributes['data-origin-height'].nodeValue;
     }
 
     if (parentNode.nodeName.toLowerCase() === 'a') {
