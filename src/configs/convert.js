@@ -47,7 +47,7 @@ const convertAtomicBlock = (block, contentState) => {
   } else if (mediaType === 'audio') {
     return <div className="media-wrap audio-wrap"><audio controls src={url} data-file-size={entity.getData()["data-file-size"]}/></div>
   } else if (mediaType === 'video') {
-    return <div className="media-wrap video-wrap"><video controls src={url} width={width} height={height} data-file-size={entity.getData()["data-file-size"]}/></div>
+    return <div className="media-wrap video-wrap"><video controls src={url} width={width} height={height}  data-origin-width={entity.getData()["data-origin-width"]} data-origin-height={entity.getData()["data-origin-height"]} data-file-size={entity.getData()["data-file-size"]}/></div>
   } else if (mediaType === 'hr') {
     return <hr></hr>
   } else {

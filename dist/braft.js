@@ -7215,7 +7215,7 @@ var convertAtomicBlock = function convertAtomicBlock(block, contentState) {
     return _react2.default.createElement(
       'div',
       { className: 'media-wrap video-wrap' },
-      _react2.default.createElement('video', { controls: true, src: url, width: width, height: height, 'data-file-size': entity.getData()["data-file-size"] })
+      _react2.default.createElement('video', { controls: true, src: url, width: width, height: height, 'data-origin-width': entity.getData()["data-origin-width"], 'data-origin-height': entity.getData()["data-origin-height"], 'data-file-size': entity.getData()["data-file-size"] })
     );
   } else if (mediaType === 'hr') {
     return _react2.default.createElement('hr', null);
@@ -7402,9 +7402,9 @@ var htmlToEntity = function htmlToEntity(nodeName, node, createEntity) {
 
     return createEntity('LINK', 'MUTABLE', { href: href, target: target });
   } else if (nodeName === 'audio') {
-    var _attrs = { url: node.src };
-    if (node.attributes['data-file-size']) _attrs['data-file-size'] = node.attributes['data-file-size'].nodeValue;
-    return createEntity('AUDIO', 'IMMUTABLE', _attrs);
+    var attrs = { url: node.src };
+    if (node.attributes['data-file-size']) attrs['data-file-size'] = node.attributes['data-file-size'].nodeValue;
+    return createEntity('AUDIO', 'IMMUTABLE', attrs);
   } else if (nodeName === 'video') {
     var url = node.src,
         width = node.width,
@@ -7414,8 +7414,8 @@ var htmlToEntity = function htmlToEntity(nodeName, node, createEntity) {
     height = height || 'auto';
     var entityData = { url: url, width: width, height: height };
     if (node.attributes['data-origin-width'] && node.attributes['data-origin-height']) {
-      attrs["data-origin-width"] = node.attributes['data-origin-width'].nodeValue;
-      attrs["data-origin-height"] = node.attributes['data-origin-height'].nodeValue;
+      entityData["data-origin-width"] = node.attributes['data-origin-width'].nodeValue;
+      entityData["data-origin-height"] = node.attributes['data-origin-height'].nodeValue;
     }
     if (node.attributes['data-file-size']) entityData['data-file-size'] = node.attributes['data-file-size'].nodeValue;
     return createEntity('VIDEO', 'IMMUTABLE', entityData);
