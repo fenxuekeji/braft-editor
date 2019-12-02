@@ -224,8 +224,8 @@ const htmlToEntity = (nodeName, node, createEntity) => {
     height = height || 'auto'
     let entityData = { url, width, height};
     if(node.attributes['data-origin-width'] && node.attributes['data-origin-height']){
-        attrs["data-origin-width"] = node.attributes['data-origin-width'].nodeValue;
-        attrs["data-origin-height"] = node.attributes['data-origin-height'].nodeValue;
+        entityData["data-origin-width"] = node.attributes['data-origin-width'].nodeValue;
+        entityData["data-origin-height"] = node.attributes['data-origin-height'].nodeValue;
     }
     if(node.attributes['data-file-size']) entityData['data-file-size']= node.attributes['data-file-size'].nodeValue;
     return createEntity('VIDEO', 'IMMUTABLE',entityData);
